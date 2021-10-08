@@ -1,2 +1,4 @@
 *.flock
 *transcript
+**/db
+**/incremental_db

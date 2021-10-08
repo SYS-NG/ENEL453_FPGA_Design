@@ -18,6 +18,10 @@
 				{
 					"name" : "switches_inputs[1]",
 					"strict" : false
+				},
+				{
+					"name" : "switches_inputs[2]",
+					"strict" : false
 				}
 			]
 		}

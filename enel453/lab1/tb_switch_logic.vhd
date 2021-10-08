@@ -17,13 +17,13 @@ ARCHITECTURE behavior OF tb_switch_logic IS
         -- reset : in std_logic
     );
     END COMPONENT;
-    
+
     --Inputs
     signal switches_inputs : std_logic_vector(2 downto 0) := (others => '0');
-    
+
     --Outputs
     signal outputs : std_logic_vector(2 downto 0);
-    
+
     BEGIN
     -- Instantiate the Unit Under Test (UUT)
     uut: switch_logic PORT MAP (
@@ -32,64 +32,76 @@ ARCHITECTURE behavior OF tb_switch_logic IS
         -- clk => clk,
         -- reset => reset
     );
-    
+
     -- Stimulus process here
-    -- Stimulus process 
-    stim_proc: process 
+    -- Stimulus process
+    stim_proc: process
     begin
-      -- hold reset state for 100 ns. 
+      -- hold reset state for 100 ns.
       wait for 100 ns;
 
-      -- Set all inputs to 0 
-      switches_inputs(0) <= '0';  --A 
-      switches_inputs(1) <= '0';  --B 
+      -- Set all inputs to 0
+      switches_inputs(0) <= '0';  --A
+      switches_inputs(1) <= '0';  --B
       switches_inputs(2) <= '0';  --C
       -- alternative syntax for the 3 above lines is
       -- switches_inputs <= "000";  -- ABC
-      
+
+		-- Add more tests to comprehensively test the circuit
+
       wait for 50 ns;
 
-      -- Test an input combination 
-      switches_inputs(0) <= '1';  --A 
-      switches_inputs(1) <= '0';  --B 
+      -- Test an input combination
+      switches_inputs(0) <= '1';  --A
+      switches_inputs(1) <= '0';  --B
       switches_inputs(2) <= '0';  --C
 
-      wait for 50 ns;
-      
-      -- Add more tests to comprehensively test the circuit 
-      -- Set all inputs to 0 
-      switches_inputs(0) <= '0';  --A 
-      switches_inputs(1) <= '1';  --B 
+		wait for 50 ns;
+
+      -- Test an input combination
+      switches_inputs(0) <= '0';  --A
+      switches_inputs(1) <= '1';  --B
       switches_inputs(2) <= '0';  --C
-      -- alternative syntax for the 3 above lines is
-      -- switches_inputs <= "000";  -- ABC
-      
-      wait for 50 ns;
 
-      -- Test an input combination 
-      switches_inputs(0) <= '1';  --A 
-      switches_inputs(1) <= '1';  --B 
-      switches_inputs(2) <= '0';  --C      
-		
-	wait for 50 ns;
-      -- Test an input combination (Steven) 
-      switches_inputs <= "100";  --CBA
-		
-	wait for 50 ns;
-      -- Test an input combination (Steven) 
-      switches_inputs <= "101";  --ABC 
+		wait for 50 ns;
 
-	wait for 50 ns;
-      -- Test an input combination (Steven) 
-      switches_inputs <= "110";  --ABC
-	
-	wait for 50 ns;
-      -- Test an input combination (Steven) 
-      switches_inputs <= "111";  --ABC 	
-	
-	wait for 50 ns;
-	
-	wait;	-- Keeps it from restarting 
+      -- Test an input combination
+      switches_inputs(0) <= '1';  --A
+      switches_inputs(1) <= '1';  --B
+      switches_inputs(2) <= '0';  --C
+
+		wait for 50 ns;
+
+      -- Test an input combination
+      switches_inputs(0) <= '0';  --A
+      switches_inputs(1) <= '0';  --B
+      switches_inputs(2) <= '1';  --C
+
+		wait for 50 ns;
+
+      -- Test an input combination
+      switches_inputs(0) <= '1';  --A
+      switches_inputs(1) <= '0';  --B
+      switches_inputs(2) <= '1';  --C
+
+		wait for 50 ns;
+
+      -- Test an input combination
+      switches_inputs(0) <= '0';  --A
+      switches_inputs(1) <= '1';  --B
+      switches_inputs(2) <= '1';  --C
+
+		wait for 50 ns;
+
+      -- Test an input combination
+      switches_inputs(0) <= '1';  --A
+      switches_inputs(1) <= '1';  --B
+      switches_inputs(2) <= '1';  --C
+
+		wait for 100 ns;
+
+
+		wait;	-- Keeps it from restarting
     end process;
 
 END;

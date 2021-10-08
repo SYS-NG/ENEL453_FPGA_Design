@@ -6,9 +6,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity switch_logic is
     Port ( 
            switches_inputs : in STD_LOGIC_VECTOR (2 downto 0);
-           outputs : out STD_LOGIC_VECTOR (2 downto 0)
-			  --  clk : in STD_LOGIC;
-           --  reset : in STD_LOGIC;
+           outputs : out STD_LOGIC_VECTOR (2 downto 0);
+			  clk : in STD_LOGIC;
+           reset : in STD_LOGIC
          );
 end switch_logic;
 
@@ -28,22 +28,23 @@ begin
 
 	-- Assign the outputs. We only have one signal for now 
 	outputs(0) <= W;
-	outputs(1) <= V;
+	outputs(1) <= V_del;
 	outputs(2) <= '0'; -- We will connect this later
 	
 	-- Get the inputs from the slide switches on the FPGA board 
 	A <= switches_inputs(0);
 	B <= switches_inputs(1);
 	C <= switches_inputs(2);
-	--  
-	--  logic_of_switches: process(clk, reset)
-	--  begin 
-	--    if (reset='1') then
-	--    V <= '0';
-	--    V_del<='0';
-	--    elsif (rising_edge(clk)) then
-	--    V<= W_int and C;
-	--    V_del<= V;
-	--    end if;
-	--   end process;
+	
+	-- sequential logic: DFF 
+	logic_of_switches: process(clk, reset)
+	begin 
+		if (reset='1') then
+			V <= '0';
+			V_del<='0';
+		elsif (rising_edge(clk)) then
+			V<= W_int and C;
+			V_del<= V;
+		end if;
+	end process;
 end Behavioral;

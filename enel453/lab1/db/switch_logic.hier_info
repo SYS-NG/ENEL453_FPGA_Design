@@ -1,0 +1,11 @@
+|switch_logic
+switches_inputs[0] => W_int.IN0
+switches_inputs[0] => W_int.IN0
+switches_inputs[1] => W_int.IN1
+switches_inputs[1] => W_int.IN1
+switches_inputs[2] => ~NO_FANOUT~
+outputs[0] << W_int.DB_MAX_OUTPUT_PORT_TYPE
+outputs[1] << W_int.DB_MAX_OUTPUT_PORT_TYPE
+outputs[2] << <GND>
+
+

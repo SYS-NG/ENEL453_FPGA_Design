@@ -38,3 +38,5 @@ sim:/tb_switch_logic/outputs
 # ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
 #           Using alternate file: ./wlftkdb3j1
 run -all
+# End time: 11:13:35 on Oct 08,2021, Elapsed time: 0:32:46
+# Errors: 0, Warnings: 3

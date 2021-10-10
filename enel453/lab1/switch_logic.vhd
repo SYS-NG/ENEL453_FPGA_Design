@@ -23,7 +23,6 @@ begin
 	W_int <= ((not B) and A) or ((not A) and B); -- models XOR
 
 	-- ADD logic for signals (W and V)
-	V <= C and W_int;
 	W <= W_int;
 
 	-- Assign the outputs. We only have one signal for now 
@@ -34,7 +33,7 @@ begin
 	-- Get the inputs from the slide switches on the FPGA board 
 	A <= switches_inputs(0);
 	B <= switches_inputs(1);
-	C <= switches_inputs(2);
+	C <= switches_inputs(2);	
 	
 	-- sequential logic: DFF 
 	logic_of_switches: process(clk, reset)
@@ -43,8 +42,8 @@ begin
 			V <= '0';
 			V_del<='0';
 		elsif (rising_edge(clk)) then
-			V<= W_int and C;
-			V_del<= V;
+			V <= W_int and C;
+			V_del <= V;
 		end if;
 	end process;
 end Behavioral;

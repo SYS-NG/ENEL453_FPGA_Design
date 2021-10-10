@@ -17,10 +17,10 @@ set_global_assignment -name SDC_FILE DE10_LITE.SDC
 # CLOCK
 #============================================================
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to ADC_CLK_10
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MAX10_CLK1_50
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to MAX10_CLK2_50
 set_location_assignment PIN_N5 -to ADC_CLK_10
-set_location_assignment PIN_P11 -to MAX10_CLK1_50
+set_location_assignment PIN_P11 -to clk
 set_location_assignment PIN_N14 -to MAX10_CLK2_50
 
 #============================================================
@@ -249,7 +249,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[8]
-set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to SW[9]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to reset
 set_location_assignment PIN_C10 -to switches_inputs[0]
 set_location_assignment PIN_C11 -to switches_inputs[1]
 set_location_assignment PIN_D12 -to switches_inputs[2]
@@ -259,7 +259,7 @@ set_location_assignment PIN_B12 -to SW[5]
 set_location_assignment PIN_A13 -to SW[6]
 set_location_assignment PIN_A14 -to SW[7]
 set_location_assignment PIN_B14 -to SW[8]
-set_location_assignment PIN_F15 -to SW[9]
+set_location_assignment PIN_F15 -to reset
 
 #============================================================
 # VGA

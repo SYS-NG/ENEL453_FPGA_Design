@@ -98,7 +98,7 @@ ARCHITECTURE behavior OF tb_switch_logic IS
       switches_inputs(1) <= '1';  --B
       switches_inputs(2) <= '1';  --C
 
-		wait for 100 ns;
+		wait for 50 ns;
 
 
 		wait;	-- Keeps it from restarting

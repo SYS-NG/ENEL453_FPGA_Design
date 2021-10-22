@@ -8,10 +8,9 @@ entity SevenSegment is
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5                         : out STD_LOGIC_VECTOR (7 downto 0)
           );
 end SevenSegment;
-
 architecture Behavioral of SevenSegment is
 
-	--Note that component declaration comes after architecture and before begin (common source of error).
+--Note that component declaration comes after architecture and before begin (common source of error).
    Component SevenSegment_decoder is 
       port(  H     : out STD_LOGIC_VECTOR (7 downto 0);
              input : in  STD_LOGIC_VECTOR (3 downto 0);

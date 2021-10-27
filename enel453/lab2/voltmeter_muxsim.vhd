@@ -5,6 +5,7 @@ use ieee.numeric_std.all;
 entity Voltmeter is
     Port ( clk                           : in  STD_LOGIC;
            reset                         : in  STD_LOGIC;
+			  mux_bit							  : in  STD_LOGIC;
            LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
           );
@@ -13,13 +14,14 @@ end Voltmeter;
 
 architecture Behavioral of Voltmeter is
 
-Signal A, Num_Hex0, Num_Hex1, Num_Hex2, Num_Hex3, Num_Hex4, Num_Hex5 :   STD_LOGIC_VECTOR (3 downto 0):= (others=>'0');   
+Signal A, Num_Hex0, Num_Hex1, Num_Hex2, Num_Hex3, Num_Hex4, Num_Hex5 :   STD_LOGIC_VECTOR (3 downto 0) := (others=>'0');   
 Signal DP_in:   STD_LOGIC_VECTOR (5 downto 0);
 Signal ADC_read,rsp_data,q_outputs_1,q_outputs_2 : STD_LOGIC_VECTOR (11 downto 0);
 Signal voltage: STD_LOGIC_VECTOR (12 downto 0);
 Signal busy: STD_LOGIC;
 signal response_valid_out_i1,response_valid_out_i2,response_valid_out_i3 : STD_LOGIC_VECTOR(0 downto 0);
 Signal bcd: STD_LOGIC_VECTOR(15 DOWNTO 0);
+Signal ave_out : std_logic_vector(11 downto 0);
 Signal Q_temp1 : std_logic_vector(11 downto 0);
 
 Component SevenSegment is
@@ -29,7 +31,7 @@ Component SevenSegment is
 			);
 End Component ;
 
-Component ADC_Conversion is
+Component test_DE10_Lite is
     Port( MAX10_CLK1_50      : in STD_LOGIC;
           response_valid_out : out STD_LOGIC;
           ADC_out            : out STD_LOGIC_VECTOR (11 downto 0)
@@ -66,7 +68,16 @@ Component averager is
     EN  : in  std_logic; -- response_valid_out
     Q   : out std_logic_vector(11 downto 0)
     );
-  end Component;
+end Component;
+
+Component mux is
+  port ( mux_bit : in  STD_LOGIC;
+	 ave     : in  STD_LOGIC_VECTOR (11 downto 0);
+	 not_ave : in STD_LOGIC_VECTOR (11 downto 0);
+	 output  : out STD_LOGIC_VECTOR (11 downto 0) 
+	 );
+end Component;
+ 
 
 begin
    Num_Hex0 <= bcd(3  downto  0); 
@@ -78,14 +89,21 @@ begin
    DP_in    <= "001000";-- position of the decimal point in the display
 
                   
-   
+mux_ins  :  mux
+			   port map(
+							mux_bit => mux_bit,
+							ave => ave_out,
+							not_ave => q_outputs_2,
+							output => Q_temp1
+						   );
+						
 ave :    averager
          port map(
                   clk       => clk,
                   reset     => reset,
                   Din       => q_outputs_2,
                   EN        => response_valid_out_i3(0),
-                  Q         => Q_temp1
+                  Q         => ave_out
                   );
    
 sync1 : registers 
@@ -144,12 +162,12 @@ SevenSegment_ins: SevenSegment
                             DP_in    => DP_in
                           );
                                      
-ADC_Conversion_ins:  ADC_Conversion  PORT MAP(      
+ADC_Conversion_ins:  test_DE10_Lite  PORT MAP(      
                                      MAX10_CLK1_50       => clk,
                                      response_valid_out  => response_valid_out_i1(0),
                                      ADC_out             => ADC_read);
  
-LEDR(9 downto 0) <=Q_temp1(11 downto 2); -- gives visual display of upper binary bits to the LEDs on board
+LEDR(9 downto 0) <= Q_temp1(11 downto 2); -- gives visual display of upper binary bits to the LEDs on board
 
 -- in line below, can change the scaling factor (i.e. 2500), to calibrate the voltage reading to a reference voltmeter
 voltage <= std_logic_vector(resize(unsigned(Q_temp1)*2500*2/4096,voltage'length));  -- Converting ADC_read a 12 bit binary to voltage readable numbers

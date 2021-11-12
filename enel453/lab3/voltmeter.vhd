@@ -99,13 +99,39 @@ END Component;
  
 
 begin
-   Num_Hex0 <= bcd(3  downto  0); 
-   Num_Hex1 <= bcd(7  downto  4);
-   Num_Hex2 <= bcd(11 downto  8);
-   Num_Hex3 <= bcd(15 downto 12);
-   Num_Hex4 <= "1111";  -- blank this display
-   Num_Hex5 <= "1111";  -- blank this display   
-   DP_in    <= "001000";-- position of the decimal point in the display
+
+display_logic : process(bcd, mux_bit_dis)
+	begin
+		Num_Hex4 <= "1111";  -- blank this display
+		Num_Hex5 <= "1111";  -- blank this display   
+		if(mux_bit_dis = '0') then
+			Num_Hex0 <= bcd(3  downto  0); 
+			Num_Hex1 <= bcd(7  downto  4);
+			Num_Hex2 <= bcd(11 downto  8);
+			Num_Hex3 <= bcd(15 downto 12);
+			DP_in    <= "001000";-- position of the decimal point in the display
+		else
+			if(bcd(15 downto 12) = "0000") then -- only show three digits if <= 10.00cm
+				Num_Hex0 <= bcd(3  downto  0); 
+				Num_Hex1 <= bcd(7  downto  4);
+				Num_Hex2 <= bcd(11 downto  8);
+				Num_Hex3 <= "1111";
+				DP_in <= "000100";
+			elsif(TO_INTEGER(UNSIGNED(bcd(15 downto 12))) > 3 or (bcd(15 downto 12) = "0011" and TO_INTEGER(UNSIGNED(bcd(11 downto 8))) >= 3)) then
+				Num_Hex0 <= "1011";
+				Num_Hex1 <= "0000";
+				Num_Hex2 <= "1111";
+				Num_Hex3 <= "1111";
+				DP_in    <= "000000";-- no decimal point
+			else
+				Num_Hex0 <= bcd(3  downto  0); 
+				Num_Hex1 <= bcd(7  downto  4);
+				Num_Hex2 <= bcd(11 downto  8);
+				Num_Hex3 <= bcd(15 downto 12);
+				DP_in    <= "000100";-- position of the decimal point in the display
+			end if;
+		end if;
+	end process;
 
                   
 mux_ave_ins  :  mux_ave

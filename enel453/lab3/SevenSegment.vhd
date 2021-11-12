@@ -28,7 +28,7 @@ architecture Behavioral of SevenSegment is
 begin
 
 Num_Hex <= (0 => Num_Hex0, 1 => Num_Hex1, 2 => Num_Hex2, 3 => Num_Hex3, 4 => Num_Hex4, 5 => Num_Hex5);
-
+	
 --Note that port mapping begins after begin (common source of error).
 g_decoder: for i in 0 to 5 generate
 	begin

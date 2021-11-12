@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity Voltmeter is
     Port ( clk                           : in  STD_LOGIC;
            reset                         : in  STD_LOGIC;
-			  mux_bit							  : in  STD_LOGIC;
+			  mux_bit_ave, mux_bit_dis		  : in  STD_LOGIC;
            LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
           );
@@ -23,6 +23,8 @@ signal response_valid_out_i1,response_valid_out_i2,response_valid_out_i3 : STD_L
 Signal bcd: STD_LOGIC_VECTOR(15 DOWNTO 0);
 Signal ave_out : std_logic_vector(11 downto 0);
 Signal Q_temp1 : std_logic_vector(11 downto 0);
+Signal distance : STD_LOGIC_VECTOR(12 DOWNTO 0);
+Signal VoltOrDis : STD_LOGIC_VECTOR(12 DOWNTO 0);
 
 Component SevenSegment is
     Port( Num_Hex0,Num_Hex1,Num_Hex2,Num_Hex3,Num_Hex4,Num_Hex5 : in  STD_LOGIC_VECTOR (3 downto 0);
@@ -70,13 +72,30 @@ Component averager is
     );
 end Component;
 
-Component mux is
-  port ( mux_bit : in  STD_LOGIC;
+Component mux_ave is
+  port ( mux_bit_ave : in  STD_LOGIC;
 	 ave     : in  STD_LOGIC_VECTOR (11 downto 0);
 	 not_ave : in STD_LOGIC_VECTOR (11 downto 0);
 	 output  : out STD_LOGIC_VECTOR (11 downto 0) 
 	 );
 end Component;
+
+Component mux_dis is
+  port ( mux_bit_dis : in  STD_LOGIC;
+	 distance     : in  STD_LOGIC_VECTOR (12 downto 0);
+	 voltage : in STD_LOGIC_VECTOR (12 downto 0);
+	 output  : out STD_LOGIC_VECTOR (12 downto 0) 
+	 );
+end Component;
+
+Component voltage2distance is
+   PORT(
+      clk            :  IN    STD_LOGIC;                                
+      reset          :  IN    STD_LOGIC;                                
+      voltage        :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);                           
+      distance       :  OUT   STD_LOGIC_VECTOR(12 DOWNTO 0)
+		);  
+END Component;
  
 
 begin
@@ -89,14 +108,22 @@ begin
    DP_in    <= "001000";-- position of the decimal point in the display
 
                   
-mux_ins  :  mux
+mux_ave_ins  :  mux_ave
 			   port map(
-							mux_bit => mux_bit,
+							mux_bit_ave => mux_bit_ave,
 							ave => ave_out,
 							not_ave => q_outputs_2,
 							output => Q_temp1
 						   );
-						
+
+mux_dis_ins : mux_dis	
+			   port map(
+							mux_bit_dis => mux_bit_dis,
+							distance    => distance,
+							voltage     => voltage,
+							output      => VoltOrDis
+						   );
+							
 ave :    averager
          port map(
                   clk       => clk,
@@ -166,19 +193,25 @@ ADC_Conversion_ins:  ADC_Conversion  PORT MAP(
                                      MAX10_CLK1_50       => clk,
                                      response_valid_out  => response_valid_out_i1(0),
                                      ADC_out             => ADC_read);
+												 
  
 LEDR(9 downto 0) <= Q_temp1(11 downto 2); -- gives visual display of upper binary bits to the LEDs on board
 
 -- in line below, can change the scaling factor (i.e. 2500), to calibrate the voltage reading to a reference voltmeter
 voltage <= std_logic_vector(resize(unsigned(Q_temp1)*2500*2/4096,voltage'length));  -- Converting ADC_read a 12 bit binary to voltage readable numbers
 
-binary_bcd_ins: binary_bcd                               
-   PORT MAP(
-      clk      => clk,                          
-      reset    => reset,                                 
-      ena      => '1',                           
-      binary   => voltage,    
-      busy     => busy,                         
-      bcd      => bcd         
-      );
+binary_bcd_ins: binary_bcd PORT MAP(
+									clk      => clk,                          
+									reset    => reset,                                 
+									ena      => '1',                           
+									binary   => VoltOrDis,    
+									busy     => busy,                         
+									bcd      => bcd);
+									
+v2d: voltage2distance PORT MAP(      
+							 clk            => clk,                                
+							 reset          => reset,                                
+							 voltage        => voltage,                           
+							 distance       => distance);		
+
 end Behavioral;

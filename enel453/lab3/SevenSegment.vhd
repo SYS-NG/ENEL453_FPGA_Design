@@ -16,40 +16,34 @@ architecture Behavioral of SevenSegment is
       port(  H     : out STD_LOGIC_VECTOR (7 downto 0);
              input : in  STD_LOGIC_VECTOR (3 downto 0);
              DP    : in  STD_LOGIC                               
-          );                  
-   end  Component;   
+          );     
+   end  Component;
+	
+	-- Define new types of array used to index HEX<> and Num_Hex<>
+	type hex_array is array (5 downto 0) of STD_LOGIC_VECTOR (7 downto 0);
+	type num_hex_array is array (5 downto 0) of STD_LOGIC_VECTOR (3 downto 0);
+	
+	signal HEX : hex_array;
+	signal Num_Hex : num_hex_array;
 begin
 
---Note that port mapping begins after begin (common source of error).
+Num_Hex <= (0 => Num_Hex0, 1 => Num_Hex1, 2 => Num_Hex2, 3 => Num_Hex3, 4 => Num_Hex4, 5 => Num_Hex5);
 
-decoder0: SevenSegment_decoder  port map 
-                                   (H     => Hex0,
-                                    input => Num_Hex0,
-                                    DP    => DP_in(0)
-                                    );
-decoder1: SevenSegment_decoder  port map 
-                                   (H     => Hex1,
-                                    input => Num_Hex1,
-                                    DP    => DP_in(1)
-                                    );
-decoder2: SevenSegment_decoder  port map 
-                                   (H     => Hex2,
-                                    input => Num_Hex2,
-                                    DP    => DP_in(2)
-                                    );
-decoder3: SevenSegment_decoder port map 
-                                   (H     => Hex3,
-                                    input => Num_Hex3,
-                                    DP    => DP_in(3)
-                                    );
-decoder4: SevenSegment_decoder  port map 
-                                   (H     => Hex4,
-                                    input => Num_Hex4,
-                                    DP    => DP_in(4)
-                                    );
-decoder5: SevenSegment_decoder  port map 
-                                   (H     => Hex5,
-                                    input => Num_Hex5,
-                                    DP    => DP_in(5)
-                                    );                            
+--Note that port mapping begins after begin (common source of error).
+g_decoder: for i in 0 to 5 generate
+	begin
+		decoder: SevenSegment_decoder port map
+												  (H     => Hex(i),
+													input => Num_Hex(i),
+													DP    => DP_in(i)
+													);
+	end generate g_decoder;
+												
+HEX0 <= HEX(0);
+HEX1 <= HEX(1);
+HEX2 <= HEX(2);
+HEX3 <= HEX(3);
+HEX4 <= HEX(4);
+HEX5 <= HEX(5);
+												
 end Behavioral;

@@ -16,7 +16,7 @@ begin
 
 	process(mux_bit, ave, not_ave)
 		begin
-			if(mux_bit = '0') then
+			if(mux_bit = '1') then
 				output(11 downto 0) <= ave(11 downto 0);
 			else
 				output(11 downto 0) <= not_ave(11 downto 0);

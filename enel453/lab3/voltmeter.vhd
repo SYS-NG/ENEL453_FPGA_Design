@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity Voltmeter is
     Port ( clk                           : in  STD_LOGIC;
            reset                         : in  STD_LOGIC;
-			  mux_bit_ave, mux_bit_dis		  : in  STD_LOGIC;
+			  mux_bit_ave, mux_bit_dis, mux_bit_close		  : in  STD_LOGIC;
            LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
           );
@@ -90,7 +90,8 @@ end Component;
 
 Component voltage2distance is
    PORT(
-      clk            :  IN    STD_LOGIC;                                
+      clk            :  IN    STD_LOGIC;   
+		mux_bit_close  :  IN    STD_LOGIC;
       reset          :  IN    STD_LOGIC;                                
       voltage        :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);                           
       distance       :  OUT   STD_LOGIC_VECTOR(12 DOWNTO 0)
@@ -235,7 +236,8 @@ binary_bcd_ins: binary_bcd PORT MAP(
 									bcd      => bcd);
 									
 v2d: voltage2distance PORT MAP(      
-							 clk            => clk,                                
+							 clk            => clk,
+							 mux_bit_close  => mux_bit_close,
 							 reset          => reset,                                
 							 voltage        => voltage,                           
 							 distance       => distance);		

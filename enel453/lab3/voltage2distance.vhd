@@ -8248,11 +8248,10 @@ begin
 	process(voltage, mux_bit_close)
 		begin
 		if (mux_bit_close = '1') then
-			v_d_conversion <= v2d_close(to_integer(unsigned(voltage)));
+			distance <= std_logic_vector(to_unsigned(v2d_close(to_integer(unsigned(voltage))),distance'length));
 		else
-			v_d_conversion <= v2d_LUT(to_integer(unsigned(voltage)));		
+			distance <= std_logic_vector(to_unsigned(v2d_LUT(to_integer(unsigned(voltage))),distance'length));	
 		end if;
-		distance <= std_logic_vector(to_unsigned(v2d_LUT(to_integer(unsigned(voltage))),distance'length));
 	end process;
 
 end behavior;

@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 entity registers is
 
 generic(bits : integer := 1);
- 
+
 port( 
 	  clk       : in  std_logic;
 	  reset     : in  std_logic;

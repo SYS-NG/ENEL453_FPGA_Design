@@ -52,18 +52,6 @@ Component binary_bcd IS
 END Component;
 
 Component registers is
-   generic(bits : integer);
-   port
-     ( 
-      clk       : in  std_logic;
-      reset     : in  std_logic;
-      enable    : in  std_logic;
-      d_inputs  : in  std_logic_vector(bits-1 downto 0);
-      q_outputs : out std_logic_vector(bits-1 downto 0)  
-     );
-END Component;
-
-Component sync is
 	port
 	( 
 	  clk       : in  std_logic;
@@ -173,7 +161,7 @@ ave :    averager
                   Q         => ave_out
                   );
 						
-synchronizer :    sync
+synchronizer :    registers
 						port map(
 							clk       => clk,
 							reset     => reset,

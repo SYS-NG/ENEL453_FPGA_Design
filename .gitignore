@@ -1,6 +1,16 @@
 *.flock
-*transcript
+*/*transcript
 **/db
 **/incremental_db
 **/output_files
 **/Simulation
+**/.bak
+**/.mti
+**/.mpf
+**/.wlf
+**/_info
+**/.qdb
+**/.qpg
+**/_vmake
+
+

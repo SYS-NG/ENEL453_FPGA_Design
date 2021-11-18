@@ -52,15 +52,16 @@ Component binary_bcd IS
 END Component;
 
 Component registers is
-   generic(bits : integer);
-   port
-     ( 
-      clk       : in  std_logic;
-      reset     : in  std_logic;
-      enable    : in  std_logic;
-      d_inputs  : in  std_logic_vector(bits-1 downto 0);
-      q_outputs : out std_logic_vector(bits-1 downto 0)  
-     );
+	port
+	( 
+	  clk       : in  std_logic;
+	  reset     : in  std_logic;
+	  enable    : in  std_logic;
+	  valid     : in  STD_LOGIC_VECTOR(0 downto 0);
+	  input     : in  STD_LOGIC_VECTOR (11 downto 0);
+	  valid_out : out STD_LOGIC_VECTOR(0 downto 0);
+	  output    : out  STD_LOGIC_VECTOR (11 downto 0)	
+    );
 END Component;
 
 Component averager is
@@ -159,46 +160,17 @@ ave :    averager
                   EN        => response_valid_out_i3(0),
                   Q         => ave_out
                   );
-   
-sync1 : registers 
-        generic map(bits => 12)
-        port map(
-                 clk       => clk,
-                 reset     => reset,
-                 enable    => '1',
-                 d_inputs  => ADC_read,
-                 q_outputs => q_outputs_1
-                );
-
-sync2 : registers 
-        generic map(bits => 12)
-        port map(
-                 clk       => clk,
-                 reset     => reset,
-                 enable    => '1',
-                 d_inputs  => q_outputs_1,
-                 q_outputs => q_outputs_2
-                );
-                
-sync3 : registers
-        generic map(bits => 1)
-        port map(
-                 clk       => clk,
-                 reset     => reset,
-                 enable    => '1',
-                 d_inputs  => response_valid_out_i1,
-                 q_outputs => response_valid_out_i2
-                );
-
-sync4 : registers
-        generic map(bits => 1)
-        port map(
-                 clk       => clk,
-                 reset     => reset,
-                 enable    => '1',
-                 d_inputs  => response_valid_out_i2,
-                 q_outputs => response_valid_out_i3
-                );                
+						
+synchronizer :    registers
+						port map(
+							clk       => clk,
+							reset     => reset,
+						   enable    => '1',
+							valid     => response_valid_out_i1,
+							input     => ADC_read,
+							valid_out => response_valid_out_i3,
+							output    => q_outputs_2
+						);            
                 
 SevenSegment_ins: SevenSegment  
                   PORT MAP( Num_Hex0 => Num_Hex0,

@@ -3358,12 +3358,16 @@ begin
 	end process;
 	
 
-	produce_pwm : process(counter_limit, counter)
+	produce_pwm : process(counter_limit, counter, reset)
    begin
-		if (counter < (counter_limit / 2)) then  -- Potential issue unsigned(counter_limit)?
-		  dac_out <= '0';
-		else 
-		  dac_out <= '1';
+		if reset = '1' then
+			dac_out <= '0';
+		else
+			if (counter < (counter_limit / 2)) then  -- Potential issue unsigned(counter_limit)?
+			  dac_out <= '0';
+			else 
+			  dac_out <= '1';
+			end if;
 		end if;
 	end process;
 				

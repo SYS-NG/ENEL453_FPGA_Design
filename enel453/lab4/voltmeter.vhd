@@ -3,11 +3,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
  
 entity Voltmeter is
-    Port ( clk                           : in  STD_LOGIC;
-           reset                         : in  STD_LOGIC;
-			  mux_bit_ave, mux_bit_dis, mux_bit_close		  : in  STD_LOGIC;
-           LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
-           HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
+    Port ( clk                                     : in  STD_LOGIC;
+           reset                                   : in  STD_LOGIC;
+			  mux_bit_ave, mux_bit_dis, mux_bit_close : in  STD_LOGIC;
+			  dac_out                                 : out STD_LOGIC;
+           LEDR                                    : out STD_LOGIC_VECTOR (9 downto 0);
+           HEX0,HEX1,HEX2,HEX3,HEX4,HEX5           : out STD_LOGIC_VECTOR (7 downto 0)
           );
            
 end Voltmeter;
@@ -100,13 +101,13 @@ Component voltage2distance is
 		);  
 END Component;
 
-Component distance2downcount IS
+Component buzzer IS
    PORT(
-      clk            :  IN    STD_LOGIC;                                
-      reset          :  IN    STD_LOGIC;		                         
-      distance       :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);
-		zero           :  OUT   STD_LOGIC
-		);
+			clk            :  IN    STD_LOGIC;                                
+			reset          :  IN    STD_LOGIC;		                         
+			distance       :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);
+			dac_out        :  OUT   STD_LOGIC
+	  	);
 END Component;
  
 
@@ -223,12 +224,12 @@ v2d: voltage2distance PORT MAP(
 							 reset          => reset,                                
 							 voltage        => voltage,                           
 							 distance       => distance);
-
-d2dc: distance2downcount PORT MAP(
-									clk => clk,                               
-									reset => reset,	                         
-									distance => distance,
-									zero => count_ena);
 		
+buzz: buzzer PORT MAP (
+				 clk      => clk,
+				 reset    => reset,
+				 distance => distance,
+				 dac_out  => dac_out);
+				
 
 end Behavioral;

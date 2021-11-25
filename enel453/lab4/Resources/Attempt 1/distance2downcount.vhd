@@ -13,8 +13,8 @@ END distance2downcount;
 
 ARCHITECTURE behavior OF distance2downcount IS
 
-	signal counter       : natural := 1;
-	signal counter_limit : natural;
+	signal counter       : unsigned(8 DOWNTO 0) := (others=>'0');
+	signal counter_limit : unsigned(8 DOWNTO 0);
 
 begin
 	
@@ -22,11 +22,13 @@ begin
 	begin
 		if rising_edge(clk) then
 			if to_integer(unsigned(distance)) >= 3300 then
-				counter_limit <= 200;	
+				counter_limit <= "100000000";	
 			elsif to_integer(unsigned(distance)) <= 0 then
-				counter_limit <= 50;
+				counter_limit <= "001000000";
 			else
-				counter_limit <= to_integer(unsigned(distance) * 150 / 3300) + 50;
+				--counter_limit <= to_integer(unsigned(distance) * 150 / 3300) + 50;
+				
+				counter_limit <= unsigned(resize(unsigned(distance) * 150 / 3300 + 50,counter_limit'length));
 			end if;
 		end if;
 		
@@ -37,14 +39,14 @@ begin
 	begin
 		if rising_edge(clk) then
 			if reset = '1' then
-				counter <= 0;
+				counter <= "000000000";
 				zero <= '0';
 			else
 				if counter >= counter_limit then
-					counter <= 0;
+					counter <= "000000000";
 					zero <= '1';
 				else
-					counter <= counter - 1;
+					counter <= counter + "000000001";
 					zero <= '0';
 				end if;
 			end if;

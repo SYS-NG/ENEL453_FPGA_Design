@@ -16,7 +16,7 @@ entity averager is
 architecture rtl of averager is
 
 	-- Clock period definition
-	constant n : integer := 32;
+	constant n : integer := 64;
 	
 	-- "Shift left factor" for dividing at the end
 	signal n_copy : std_logic_vector(16 downto 0);

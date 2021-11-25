@@ -3,11 +3,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
 entity PWM_DAC is
-   Generic ( width : integer := 9);
-   Port    ( reset      : in STD_LOGIC;
-             clk        : in STD_LOGIC;
+   Generic ( width : integer := 10);
+   Port    (
+			    clk        : in STD_LOGIC;
+				 reset      : in STD_LOGIC;
+				 count_ena  : in STD_LOGIC;
              duty_cycle : in STD_LOGIC_VECTOR (width-1 downto 0);
-             pwm_out    : out STD_LOGIC
+             dac_out    : out STD_LOGIC
            );
 end PWM_DAC;
 
@@ -17,19 +19,19 @@ architecture Behavioral of PWM_DAC is
 begin
    count : process(clk,reset)
    begin
-       if( reset = '1') then
-           counter <= (others => '0');
-       elsif (rising_edge(clk)) then 
-           counter <= counter + 1;
+       if (reset = '1') then
+			  counter <= (others => '0');
+       elsif (rising_edge(clk)) and (count_ena = '1') then
+			  counter <= counter + 1;
        end if;
    end process;
  
    compare : process(counter, duty_cycle)
    begin    
        if (counter < unsigned(duty_cycle)) then
-           pwm_out <= '1';
+           dac_out <= '1';
        else 
-           pwm_out <= '0';
+           dac_out <= '0';
        end if;
    end process;
   

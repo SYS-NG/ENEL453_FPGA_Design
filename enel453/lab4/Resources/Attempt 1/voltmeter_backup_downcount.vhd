@@ -35,7 +35,7 @@ Component SevenSegment is
 			);
 End Component ;
 
-Component test_DE10_Lite is
+Component ADC_Conversion is
     Port( MAX10_CLK1_50      : in STD_LOGIC;
           response_valid_out : out STD_LOGIC;
           ADC_out            : out STD_LOGIC_VECTOR (11 downto 0)
@@ -101,14 +101,25 @@ Component voltage2distance is
 		);  
 END Component;
 
-Component buzzer IS
+Component distance2downcount IS
    PORT(
-			clk            :  IN    STD_LOGIC;                                
-			reset          :  IN    STD_LOGIC;		                         
-			distance       :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);
-			dac_out        :  OUT   STD_LOGIC
-	  	);
+      clk            :  IN    STD_LOGIC;                                
+      reset          :  IN    STD_LOGIC;		                         
+      distance       :  IN    STD_LOGIC_VECTOR(12 DOWNTO 0);
+		zero           :  OUT   STD_LOGIC
+		);
 END Component;
+
+Component PWM_DAC is
+   Generic ( width : integer := 10);
+   Port    (
+				 clk        : in STD_LOGIC;
+				 reset      : in STD_LOGIC;
+				 count_ena  : in STD_LOGIC;
+             duty_cycle : in STD_LOGIC_VECTOR (width-1 downto 0);
+             dac_out    : out STD_LOGIC
+           );
+end Component;
  
 
 begin
@@ -199,7 +210,7 @@ SevenSegment_ins: SevenSegment
                             DP_in    => DP_in
                           );
                                      
-ADC_Conversion_ins:  test_DE10_Lite  PORT MAP(      
+ADC_Conversion_ins:  ADC_Conversion  PORT MAP(      
                                      MAX10_CLK1_50       => clk,
                                      response_valid_out  => response_valid_out_i1(0),
                                      ADC_out             => ADC_read);
@@ -224,12 +235,21 @@ v2d: voltage2distance PORT MAP(
 							 reset          => reset,                                
 							 voltage        => voltage,                           
 							 distance       => distance);
+
+d2dc: distance2downcount PORT MAP(
+									clk      => clk,                               
+									reset    => reset,	                         
+									distance => distance,
+									zero     => count_ena);
+									
+PWM: PWM_DAC
+			generic map(width => 10)
+			PORT MAP (
+				 clk        => clk,
+				 reset      => reset,
+				 count_ena  => count_ena,
+				 duty_cycle => "0111111111",
+				 dac_out    => dac_out);
 		
-buzz: buzzer PORT MAP (
-				 clk      => clk,
-				 reset    => reset,
-				 distance => distance,
-				 dac_out  => dac_out);
-				
 
 end Behavioral;

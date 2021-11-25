@@ -77,6 +77,7 @@ end Component;
 
 Component mux_ave is
   port ( mux_bit_ave : in  STD_LOGIC;
+    clk     : in STD_LOGIC;
 	 ave     : in  STD_LOGIC_VECTOR (11 downto 0);
 	 not_ave : in STD_LOGIC_VECTOR (11 downto 0);
 	 output  : out STD_LOGIC_VECTOR (11 downto 0) 
@@ -85,6 +86,7 @@ end Component;
 
 Component mux_dis is
   port ( mux_bit_dis : in  STD_LOGIC;
+    clk     : in STD_LOGIC;
 	 distance     : in  STD_LOGIC_VECTOR (12 downto 0);
 	 voltage : in STD_LOGIC_VECTOR (12 downto 0);
 	 output  : out STD_LOGIC_VECTOR (12 downto 0) 
@@ -150,6 +152,7 @@ display_logic : process(bcd, mux_bit_dis)
 mux_ave_ins  :  mux_ave
 			   port map(
 							mux_bit_ave => mux_bit_ave,
+							clk => clk,
 							ave => ave_out,
 							not_ave => q_outputs_2,
 							output => Q_temp1
@@ -158,6 +161,7 @@ mux_ave_ins  :  mux_ave
 mux_dis_ins : mux_dis	
 			   port map(
 							mux_bit_dis => mux_bit_dis,
+							clk => clk,
 							distance    => distance,
 							voltage     => voltage,
 							output      => VoltOrDis

@@ -8245,14 +8245,12 @@ begin
    -- This is the only statement required. It looks up the converted value of 
 	-- the voltage input (in mV) in the v2d_LUT look-up table, and outputs the 
 	-- distance (in 10^-4 m) in std_logic_vector format.
-	process(voltage, mux_bit_close, clk)
+	process(voltage, mux_bit_close)
 		begin
-		if rising_edge(clk) then
-			if (mux_bit_close = '1') then
-				distance <= std_logic_vector(to_unsigned(v2d_close(to_integer(unsigned(voltage))),distance'length));
-			else
-				distance <= std_logic_vector(to_unsigned(v2d_LUT(to_integer(unsigned(voltage))),distance'length));	
-			end if;
+		if (mux_bit_close = '1') then
+			distance <= std_logic_vector(to_unsigned(v2d_close(to_integer(unsigned(voltage))),distance'length));
+		else
+			distance <= std_logic_vector(to_unsigned(v2d_LUT(to_integer(unsigned(voltage))),distance'length));	
 		end if;
 	end process;
 
